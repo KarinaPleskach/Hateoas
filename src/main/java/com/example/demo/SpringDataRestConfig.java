@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.CollectionModel;
@@ -8,13 +9,20 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelProcessor;
 
 @Configuration
+@Slf4j
 public class SpringDataRestConfig {
+
+    public static int entityModelDemoEntityCounter = 0;
+    public static int collectionModelDemoEntityCounter = 0;
+    public static int entityModelSecondEntityCounter = 0;
+    public static int collectionModelSecondEntityCounter = 0;
 
     @Bean
     public RepresentationModelProcessor<EntityModel<DemoEntity>> demoEntityProcessor() {
         return new RepresentationModelProcessor<EntityModel<DemoEntity>>() {
             @Override
             public EntityModel<DemoEntity> process(EntityModel<DemoEntity> entity) {
+                log.info(++entityModelDemoEntityCounter + "process(EntityModel<DemoEntity> entity)");
                 return new MyHateoasEntityModel<>(entity.getContent(), entity.getLink("self").orElse(new Link("self")));
             }
         };
@@ -27,7 +35,7 @@ public class SpringDataRestConfig {
 
             @Override
             public CollectionModel<EntityModel<DemoEntity>> process(CollectionModel<EntityModel<DemoEntity>> collection) {
-//                return new CollectionModel<>(collection.getContent());
+                log.info(++collectionModelDemoEntityCounter + "process(CollectionModel<EntityModel<DemoEntity>> collection)");
                 return new MyHateoasCollectionModel<>(collection.getContent());
             }
         };
@@ -38,6 +46,7 @@ public class SpringDataRestConfig {
         return new RepresentationModelProcessor<EntityModel<SecondEntity>>() {
             @Override
             public EntityModel<SecondEntity> process(EntityModel<SecondEntity> entity) {
+                log.info(++entityModelSecondEntityCounter + "process(EntityModel<SecondEntity> entity)");
                 return new MyHateoasEntityModel<>(entity.getContent(), entity.getLink("self").orElse(new Link("self")));
             }
         };
@@ -50,7 +59,7 @@ public class SpringDataRestConfig {
 
             @Override
             public CollectionModel<EntityModel<SecondEntity>> process(CollectionModel<EntityModel<SecondEntity>> collection) {
-//                return new CollectionModel<>(collection.getContent());
+                log.info(++collectionModelSecondEntityCounter + "process(CollectionModel<EntityModel<SecondEntity>> collection)");
                 return new MyHateoasCollectionModel<>(collection.getContent());
             }
         };
